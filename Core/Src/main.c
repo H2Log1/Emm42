@@ -102,16 +102,17 @@ int main(void)
   // uint8_t test_move[] = {0x01, 0xF6, 0x00, 0x05, 0xDC, 0x00, 0x00, 0x6B};
   // HAL_UART_Transmit_DMA(&huart6, test_init, sizeof(test_init));
 
-  // 电机使能
+  // 电机使能（不同步）
   Emm_V5_En_Control(0x01, true, false);
   HAL_Delay(10);
   Emm_V5_En_Control(0x02, true, false);
   HAL_Delay(10);
 
-  // int flag = 0;
-
-  // Emm_V5_En_Control(0x01, true, true);
-  // HAL_Delay(10);
+  // 电机使能（同步）
+  Emm_V5_En_Control(0x01, true, true);
+  HAL_Delay(10);
+  Emm_V5_En_Control(0x02, true, true);
+  HAL_Delay(10);
   
   
   /* USER CODE END 2 */
@@ -123,9 +124,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+    // 串口发送测试
     // HAL_UART_Transmit_DMA(&huart6, test_move, sizeof(test_move));
 
-    // 每10s改变状态
+    // 每10s改变状态（同转同停）
     // if(flag == 0)
     // {
     //   Emm_V5_Vel_Control(0x01, 0x00, 500, 0x00, true);
@@ -145,36 +148,21 @@ int main(void)
     //   HAL_Delay(10);
     // }
 
-    // flag = !flag;
-
-    // if (flag == 0)
-    // {
-    //   Emm_V5_Vel_Control(0x01, 0x00, 500, 0x00, false);
-    //   HAL_Delay(10);
-    //   Emm_V5_Stop_Now(0x02, false);
-    //   HAL_Delay(10);
-    // }
-    // else
-    // {
-    //   Emm_V5_Vel_Control(0x02, 0x00, 500, 0x00, false);
-    //   HAL_Delay(10);
-    //   Emm_V5_Stop_Now(0x01, false);
-    //   HAL_Delay(10);
-    // }
-
-    // flag = !flag;
-
-    
-    // if (flag == 0)
-    // {
-    //   Emm_V5_Pos_Control(0x01, 0x00, 500, 0x00, 3200, 0x00, false);
-    //   HAL_Delay(10);
-    // }
-    // else
-    // {
-    //   Emm_V5_Stop_Now(0x00, false);
-    //   HAL_Delay(10);
-    // }
+    // 每10s改变状态（一停一转）
+    if (flag == 0)
+    {
+      Emm_V5_Vel_Control(0x01, 0x00, 500, 0x00, false);
+      HAL_Delay(10);
+      Emm_V5_Stop_Now(0x02, false);
+      HAL_Delay(10);
+    }
+    else
+    {
+      Emm_V5_Vel_Control(0x02, 0x00, 500, 0x00, false);
+      HAL_Delay(10);
+      Emm_V5_Stop_Now(0x01, false);
+      HAL_Delay(10);
+    }
 
     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
     HAL_Delay(100);

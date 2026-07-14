@@ -110,7 +110,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim->Instance == TIM6)
   {
     count++;
-    if(count % 3000 == 0) //10s
+    if(count % 1000 == 0) // 计时10s
     {
       flag = !flag;
     }
